@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html class="fullHeight">
+  <head>
+    <title>מספרים</title>
+    <!-- Bootstrap -->
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="fortawesome/css/font-awesome.css" rel="stylesheet">
+    <style type="text/css">
+      .fullHeight {
+        height: 100%;
+      }
+      .absolute {
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+      .minHeight {
+        min-height: 100%;
+      }
+      .zindex {
+        z-index: 5;
+      }
+      i {
+        cursor: pointer;
+      }
+      [class^="icon-"] {
+          background-position: 14px, 14px;
+          background-image: url();
+          color: grey;
+      }
+      @font-face {
+        font-family: 'FontAwesome';
+        src: url('fortawesome/font/fontawesome-webfont.eot');
+        src: url('fortawesome/font/fontawesome-webfont.eot?#iefix') format('embedded-opentype'),
+           url('fortawesome/font/fontawesome-webfont.woff') format('woff'),
+           url('fortawesome/font/fontawesome-webfont.ttf') format('truetype'),
+           url('fortawesome/font/fontawesome-webfont.svg#FontAwesome') format('svg');
+        font-weight: normal;
+        font-style: normal;
+      }      
+    </style>
+  </head>
+  <body class="fullHeight">
+    <div class="absolute zindex">
+    <i class="icon-volume-up"></i>
+    &nbsp;
+    <i class="icon-backward"></i>
+    <i class="icon-random"></i>  
+    <i class="icon-refresh"></i>  
+    <i class="icon-forward"></i>
+    </div>
+    <div class="row minHeight absolute">
+    <div class="span12 minHeight" id="canvasDiv"></div>
+    </div>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+    <script src="js/numbers.js"></script>
+    <script type="text/javascript">
+      $(window).load(function() {
+        numberCanvas.init();
+        numberCanvas.redraw();              
+      });
+    </script>
+  </body>
+</html>

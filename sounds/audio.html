@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script type="text/javascript" charset="utf-8" src="../cordova-2.1.0.js"></script>
+    <script>
+        var media;
+        function pplay(audioFile) {
+//            document.getElementById('logg').innerHTML = "window.Media";
+//            document.getElementById('logg').innerHTML = Media;
+//            if (window.Media) {
+//                if (media) {
+//                    media.stop();
+//                }
+//                media = new Media(audioFile);
+//                media.play();
+//            } else {
+//                //document.getElementById('play').src='/sdcard/Bluetooth/0_iw.3ga';
+                document.getElementById('play').src=audioFile;
+                document.getElementById('play').play();
+//            }
+
+
+//            media = new Media(audioFile);
+  //          setTimeout(function(){
+    //            media.play();
+      //      }, 100);
+
+        }
+    </script>
+</head>
+<body>
+
+<audio id="play" autoplay="autoplay" controls="controls">
+Your browser does not support the audio element.
+</audio>
+<button onclick="pplay('/sdcard/Bluetooth/0_iw.3ga');">zero</button>
+<button onclick="pplay('0_iw.3ga');">one</button>
+<span id="logg"></span>
+
+</body>
+</html>

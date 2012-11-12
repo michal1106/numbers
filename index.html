@@ -1,97 +1,109 @@
 <!DOCTYPE html>
-<html class="fullHeight">
+<html>
 <head>
-    <title>מספרים</title>
-    <meta name="HandheldFriendly" content="true" />
-    <meta name="viewport" content="width=device-width, height=device-height, user-scalable=no" />
-    <script type="text/javascript" charset="utf-8" src="cordova-1.9.0.js"></script>
+    <title>זהה מספר</title>
     <script type="text/javascript" charset="utf-8" src="http://code.jquery.com/jquery-latest.js"></script>
-    <script type="text/javascript" charset="utf-8" src="bootstrap/js/bootstrap.min.js"></script>
-    <script type="text/javascript" charset="utf-8" src="js/numbers.js"></script>
-    <!-- Bootstrap -->
-    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
+    <script type="text/javascript" charset="utf-8" src="cordova-2.1.0.js"></script>
+    <link href="css/mc.css" rel="stylesheet">
     <link href="fortawesome/css/font-awesome.css" rel="stylesheet">
-    <style type="text/css">
-        body {
-          overflow: hidden;
-        }
-        .fullHeight {
-            height: 100%;
-        }
-        .absolute {
-            position: absolute;
-        }
-        .top {
-            top: 0;
-        }
-        .bottom {
-            bottom: 0;
-        }
-        .left {
-            left: 0;
-        }
-        .right {
-            right: 0;
-        }
-        .minHeight {
-            min-height: 100%;
-        }
-        .zindex {
-            z-index: 5;
-        }
-        i {
-            cursor: pointer;
-        }
-        [class^="icon-"] {
-            background-position: 14px, 14px;
-            background-image: url();
-            color: grey;
-        }
-        @font-face {
-            font-family: 'FontAwesome';
-            src: url('fortawesome/font/fontawesome-webfont.eot');
-            src: url('fortawesome/font/fontawesome-webfont.eot?#iefix') format('embedded-opentype'),
-            url('fortawesome/font/fontawesome-webfont.woff') format('woff'),
-            url('fortawesome/font/fontawesome-webfont.ttf') format('truetype'),
-            url('fortawesome/font/fontawesome-webfont.svg#FontAwesome') format('svg');
-            font-weight: normal;
-            font-style: normal;
-        }
-    </style>
 </head>
-<body class="fullHeight">
-<div class="absolute zindex left top">
-    <i class="icon-volume-up"></i>
-</div>
-<div class="absolute zindex right top">
-    <i class="icon-backward"></i>
-    <i class="icon-forward"></i>
-</div>
-<div class="absolute zindex left bottom">
+<body>
+    <div style="text-align:center;" class="view font">
+		<span id="playButton" class="button-two selected"><i class="icon-play"></i></span>
+		<div><span id="op1" class="button-three">1</span><span id="op2" class="button-three">2</span></div>
+		<div><span id="op3" class="button-three">3</span><span id="op4" class="button-three">4</span></div>
+	</div>
+	<div class="random">
     <i class="icon-random"></i>
-</div>
-<div class="absolute zindex right  bottom">
-    <i class="icon-refresh"></i>
-</div>
-<div class="absolute minHeight" id="canvasDiv"></div>
-<!--
-<div class="row minHeight absolute">
-    <div class="span12 minHeight" id="canvasDiv"></div>
-</div>
--->
+	</div>
 <audio id="play" autoplay="autoplay">
 </audio>
-<!--
-<div class="absolute zindex left" style="top:140px;">
-    <span id="width"></span>,<span id="height"></span>
-</div>
--->
+<audio id="feedback" autoplay="autoplay">
+</audio>
 <script type="text/javascript">
-    $(window).load(function() {
-        numberCanvas.init();
-        numberCanvas.redraw();
+    var isSmartPhone = navigator.userAgent.match(/(Android)/); // (/(iPhone|iPod|iPad|Android|BlackBerry)/);
+	var curNumber;
+	var localeSuffix = '_iw.mp3';
+    var media, isAudioPlay = false;
+    var isAlreadyListened = false;
+	$("#playButton").click(function(e) {
+        if (isAudioPlay) {
+            return;
+        }
+        isAudioPlay = true;
+        $(this).removeClass('selected');
+        if (isSmartPhone) {
+            // TODO: adjust to iPhone...
+            media = new Media('/android_asset/www/sounds/'+curNumber+localeSuffix, stopPlayAudio);
+            media.play();
+        } else {
+            $("audio#play").attr("src", 'sounds/'+curNumber+localeSuffix);
+        }
+	})
+	$("span[id^='op']").click(function(e) {
+        if (isAudioPlay || !isAlreadyListened) {
+            return;
+        }
+		// click on an answer
+		var answer = $(this).text();
+		$("span[id^='op']").removeClass("selected");
+		$(this).addClass("selected");
+		var feedback = (answer == curNumber)? "excellent": "tryAgain";
+        if (isSmartPhone) {
+            // TODO: adjust to iPhone...
+            media = new Media('/android_asset/www/sounds/'+feedback+localeSuffix, stopAudio);
+            media.play();
+        } else {
+            $("audio#play").attr("src", 'sounds/'+feedback+localeSuffix);
+        }
+	})
+	$("i.icon-random").click(function(e) {
+        // remove previous styling
+        $("span[id^='op']").removeClass("rightAnswer");
+        $("span[id^='op']").removeClass("selected");
+        curNumber = Math.floor(Math.random()*10);
+        var currentAnswers = [curNumber];
+
+        // random position of right answer
+        var currIndex = Math.ceil(Math.random()*4);
+        for(var i=1; i<=4; i++) {
+            if (currIndex != i) {
+                var newNumber = Math.floor(Math.random()*10);
+                while (currentAnswers.indexOf(newNumber) != -1) {
+                    newNumber = Math.floor(Math.random()*10);
+                }
+                currentAnswers.push(newNumber);
+            }
+            $("span#op"+i).text((currIndex == i)?curNumber:newNumber);
+            if(currIndex == i) {
+                $("span#op"+i).addClass("rightAnswer");
+            }
+        }
+        $("span[id^='op']").removeClass("button-two").addClass("button-three");
+        isAlreadyListened = false;
     });
+    $("audio#play").on("ended", function() {
+        stopPlayAudio(true);
+    })
+    function stopPlayAudio(isDesktop) {
+        stopAudio(true);
+        // change the play button to active
+        $("#playButton").addClass("selected");
+        if (!isAlreadyListened) {
+            isAlreadyListened = true;
+            // change the buttons to active
+            $("span[id^='op']").removeClass("button-three").addClass("button-two");
+        }
+    }
+    function stopAudio(isDesktop) {
+        if (!isDesktop) {
+            media.stop();
+            media = null;
+        }
+        isAudioPlay = false;
+    }
+
+    $("i.icon-random").click();
 </script>
 </body>
 </html>

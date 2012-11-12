@@ -83,9 +83,6 @@ body {
     background: linear-gradient(top, #ffd800 0%,#ff9d00 100%); /* W3C */
 
 }
-span[class^="button-"] {
-    cursor: pointer;
-}
 .button-two{
     width:30%;
     padding:0;
@@ -177,4 +174,7 @@ span[class^="button-"] {
 .icon-random {
     color: grey;
     font-size: 400%;
+}
+span[class^="button-"], .rightAnswer {
+    cursor: pointer;
 }
